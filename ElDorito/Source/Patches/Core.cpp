@@ -1287,18 +1287,15 @@ namespace
 	}
 
 	// TODO: find a way to support halo 3 insertions
-	unsigned short game_insertion_point_set(char is_survival)
+	uint16_t game_insertion_point_set(char is_survival)
 	{
-		uint16_t mapinfo_current_insertion_index = Pointer(0x19A5EC4).Read<short>();
-		auto scnrDefinition = Blam::Tags::Scenario::GetCurrentScenario();
+    		auto scnrDefinition = Blam::Tags::Scenario::GetCurrentScenario();
+    		auto campaignInsertion = ((uint16_t(__cdecl*)())0xA80880)();
 
-		if (!is_survival)
-			return 0;
+    		if (is_survival && (scnrDefinition->ScenarioMetagame2 && scnrDefinition->ScenarioMetagame2[0].Survival2.Count > campaignInsertion))
+        		return scnrDefinition->ScenarioMetagame2[0].Survival2[campaignInsertion].InsertionIndex;
 
-		if (scnrDefinition->ScenarioMetagame2 && scnrDefinition->ScenarioMetagame2[0].Survival2.Count >= (mapinfo_current_insertion_index + 1))
-			return scnrDefinition->ScenarioMetagame2[0].Survival2[mapinfo_current_insertion_index].InsertionIndex;
-
-		return 0;
+    		return 0;
 	}
 
 	// todo: make these user configurable, campaign_prefs.cfg?
